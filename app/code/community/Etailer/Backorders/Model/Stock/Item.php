@@ -2,6 +2,7 @@
 
 class Etailer_Backorders_Model_Stock_Item extends Mage_CatalogInventory_Model_Stock_Item
 {
+
     /**
      * Check quantity
      *
@@ -15,9 +16,16 @@ class Etailer_Backorders_Model_Stock_Item extends Mage_CatalogInventory_Model_St
             return true;
         }
 
-        if ($this->getQty() - $this->getMinQty() - $qty < 0) {
-            return false;
+        if ($this->getBackorders()) {
+            if ($this->getQty() - $this->getMinQty() - $qty < 0) {
+                return false;
+            }
+        } else {
+            if ($this->getQty() - $qty < 0) {
+                return false;
+            }
         }
+
         return true;
     }
     
@@ -32,10 +40,17 @@ class Etailer_Backorders_Model_Stock_Item extends Mage_CatalogInventory_Model_St
         if ($qty === null) {
             $qty = $this->getQty();
         }
-        if ($qty <= $this->getMinQty()) {
-            return false;
+
+        if ($this->getBackorders()) {
+            if ($qty <= $this->getMinQty()) {
+                return false;
+            }
+        } else {
+            if ($qty <= 0) {
+                return false;
+            }
         }
+
         return true;
     }
-
 }
